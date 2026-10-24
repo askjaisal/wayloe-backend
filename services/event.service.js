@@ -214,3 +214,16 @@ export const cancelEvent = async (userId, eventId) => {
   event.cancelledAt = new Date();
   await event.save();
 };
+
+export const deleteEvent = async (userId, eventId) => {
+  const event = await Event.findById(eventId);
+  if (!event) {
+    throw new AppError('Event not found', 404);
+  }
+  if (event.createdBy.toString() !== userId.toString()) {
+    throw new AppError('Only the event host can delete this event', 403);
+  }
+
+  await event.deleteOne();
+  logger.info({ eventId, userId }, 'Event deleted');
+};

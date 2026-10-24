@@ -24,3 +24,8 @@ export const leaveGroup = async (req, res) => {
   await groupService.leaveGroup(req.user._id, req.params.id);
   res.json({ success: true, message: 'Left group successfully' });
 };
+
+export const deleteGroup = async (req, res) => {
+  await groupService.deleteGroup(req.user._id, req.params.id);
+  res.json({ success: true, message: 'Group deleted successfully' });
+};

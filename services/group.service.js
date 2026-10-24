@@ -1,7 +1,9 @@
 import Group from '../models/Group.js';
 import FavoritePlace from '../models/FavoritePlace.js';
+import Message from '../models/Message.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { moderateFields } from './moderation.service.js';
+import { getIO } from './realtime.service.js';
 import logger from '../utils/logger.js';
 
 export const createGroup = async (userId, { name, description, profileImage }) => {
@@ -113,4 +115,31 @@ export const leaveGroup = async (userId, groupId) => {
   await group.save();
 
   logger.info({ groupId: group._id, userId }, 'User left group');
+};
+
+export const deleteGroup = async (userId, groupId) => {
+  const group = await Group.findById(groupId);
+  if (!group) {
+    throw new AppError('Group not found', 404);
+  }
+  if (group.createdBy.toString() !== userId.toString()) {
+    throw new AppError('Only the group creator can delete this group', 403);
+  }
+
+  await FavoritePlace.deleteMany({ groupId: group._id });
+  await Message.deleteMany({ groupId: group._id });
+  await group.deleteOne();
+
+  const io = getIO();
+  if (io) {
+    const room = `group:${groupId}`;
+    try {
+      io.to(room).emit('group_deleted', { groupId: groupId.toString() });
+      await io.in(room).socketsLeave(room);
+    } catch (error) {
+      logger.warn({ err: error, groupId }, 'Could not close sockets for deleted group');
+    }
+  }
+
+  logger.info({ groupId, userId }, 'Group deleted');
 };

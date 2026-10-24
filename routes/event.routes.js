@@ -3,6 +3,7 @@ import rateLimit from 'express-rate-limit';
 import {
   cancelEvent,
   createEvent,
+  deleteEvent,
   getPublicEvents,
   getUserEvents,
   joinPrivateEventByCode,
@@ -36,6 +37,7 @@ router.post('/', protect, validate(createEventSchema), createEvent);
 router.post('/join-code', protect, inviteCodeLimiter, validate(joinEventByCodeSchema), joinPrivateEventByCode);
 router.post('/:id/join', protect, validate(eventIdParamSchema, 'params'), joinPublicEvent);
 router.delete('/:id/leave', protect, validate(eventIdParamSchema, 'params'), leaveEvent);
+router.delete('/:id/permanent', protect, validate(eventIdParamSchema, 'params'), deleteEvent);
 router.delete('/:id', protect, validate(eventIdParamSchema, 'params'), cancelEvent);
 
 export default router;

@@ -34,3 +34,8 @@ export const cancelEvent = async (req, res) => {
   await eventService.cancelEvent(req.user._id, req.params.id);
   res.json({ success: true, message: 'Event cancelled successfully' });
 };
+
+export const deleteEvent = async (req, res) => {
+  await eventService.deleteEvent(req.user._id, req.params.id);
+  res.json({ success: true, message: 'Event deleted successfully' });
+};
