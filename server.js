@@ -17,6 +17,7 @@ import mapRoutes from './routes/map.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import groupRoutes from './routes/group.routes.js';
 import messageRoutes from './routes/message.routes.js';
+import eventRoutes from './routes/event.routes.js';
 
 process.on('unhandledRejection', (reason) => {
   logger.fatal({ err: reason }, 'Unhandled Rejection');
@@ -88,6 +89,7 @@ app.use('/api/map', mapRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/events', eventRoutes);
 
 app.use('/api', (_req, res) => {
   res.status(404).json({ success: false, error: 'Route not found' });
