@@ -4,12 +4,13 @@ import RefreshToken from '../models/RefreshToken.js';
 import env from '../config/env.js';
 import logger from '../utils/logger.js';
 import { AppError } from '../middleware/errorHandler.js';
+import { durationToMilliseconds } from '../utils/duration.js';
 
 const REFRESH_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: env.NODE_ENV === 'production',
   sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax',
-  maxAge: 30 * 24 * 60 * 60 * 1000,
+  maxAge: durationToMilliseconds(env.JWT_REFRESH_EXPIRES_IN),
   path: '/',
 };
 

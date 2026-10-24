@@ -9,7 +9,7 @@ const envSchema = z.object({
   MONGODB_URL: z.string().url({ message: 'MONGODB_URL must be a valid MongoDB connection string' }),
   JWT_SECRET: z.string().min(32, { message: 'JWT_SECRET must be at least 32 characters' }),
   JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
-  JWT_REFRESH_EXPIRES_IN: z.string().default('30d'),
+  JWT_REFRESH_EXPIRES_IN: z.string().regex(/^\d+[smhd]$/, 'JWT_REFRESH_EXPIRES_IN must use seconds, minutes, hours, or days (for example 7d)').default('7d'),
   COOKIE_SECRET: z.string().min(32, { message: 'COOKIE_SECRET must be at least 32 characters' }),
   AWS_ACCESS_KEY_ID: z.string().min(1, { message: 'AWS_ACCESS_KEY_ID is required' }),
   AWS_SECRET_ACCESS_KEY: z.string().min(1, { message: 'AWS_SECRET_ACCESS_KEY is required' }),

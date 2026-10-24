@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import crypto from 'crypto';
+import env from '../config/env.js';
+import { durationToMilliseconds } from '../utils/duration.js';
 
 const refreshTokenSchema = new mongoose.Schema({
   user: {
@@ -40,7 +42,7 @@ refreshTokenSchema.statics.generateToken = function() {
 
 refreshTokenSchema.statics.createRefreshToken = async function(userId, req) {
   const token = this.generateToken();
-  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + durationToMilliseconds(env.JWT_REFRESH_EXPIRES_IN));
 
   return this.create({
     user: userId,
